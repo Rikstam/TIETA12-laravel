@@ -15,6 +15,20 @@ class DatabaseSeeder extends Seeder {
 		Model::unguard();
 
 		// $this->call('UserTableSeeder');
+
+		$this->call('AccountTableSeeder');
 	}
 
+}
+
+class AccountTableSeeder extends Seeder {
+
+	public function run()
+	{
+		DB::table('accounts')->delete();
+
+				Account::create(array('amount' => 99999, 'code'=> 'FI43534-4554'));
+				Account::create(array('amount' => 1, 'code'=> 'FI5555-5555'));
+
+	}
 }
