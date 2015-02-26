@@ -1,8 +1,14 @@
 <?php namespace App;
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class Account extends Eloquent{
+class Account extends Model{
 
-	protected $table = 'accounts';
+	protected $fillable = [
+		'name',
+		'code'
+	];
 
+	public function user(){
+		return $this->belongsTo('App\User');
+	}
 }

@@ -20,8 +20,31 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
-Route::get('form','AccountsController@index');
+
+//Account routes
+
+Route::get('accounts','AccountsController@index');
+
+
+Route::get('accounts/create', 'AccountsController@create');
+
+Route::post('accounts', 'AccountsController@store');
+
+Route::get('accounts/{id}', 'AccountsController@show');
+
+
+//Users routes
+Route::get('users', 'UsersController@index');
+
+Route::get('users/create', 'UsersController@create');
+Route::post('users', 'UsersController@store');
+
+
+
+//Number guess game routes
+
 Route::get('quiz','QuizController@index');
+
 
 Route::post('quiz/process', 'QuizController@process');
 
@@ -29,3 +52,5 @@ Route::get('quiz/quit', 'QuizController@quit');
 
 
 Route::post('process', 'AccountsController@transfer');
+
+Route::get('about', 'PagesController@about');

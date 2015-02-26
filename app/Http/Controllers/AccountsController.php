@@ -9,6 +9,7 @@ use View;
 use Input;
 use Validator;
 use Redirect;
+use Auth;
 
 class AccountsController extends Controller {
 
@@ -19,22 +20,25 @@ class AccountsController extends Controller {
 	 */
 	public function index()
 	{
-		$accounts_data = Account::all();
 
+		//Auth::user();
+
+		$accounts_data = 	Auth::user()->accounts()->get();
+		$user = Auth::user();
 		$balances = array();
 		$accounts = array();
 
-	foreach ($accounts_data as $a){
-		$balances[$a->id] = $a->amount;
-		$accounts[$a->id] = $a->code . " " . $a->amount . "&euro;";
+		foreach ($accounts_data as $a){
+			$balances[$a->id] = $a->amount;
+			$accounts[$a->id] = $a->code . " " . $a->amount . "&euro;";
 
-	}
+		}
 
 	//$balances = array('account_1_balance'=>500, 'account_2_balance' => 10);
 
-	$data = array('accounts' => $accounts, 'balances' => $balances );
+	$data = array('accounts' => $accounts, 'balances' => $balances, 'all_accounts' => $accounts_data, 'user' => Auth::User() );
 //var_dump($data);
-	return View::make('form', $data);
+	return View::make('accounts.index', $data);
 	}
 
 	public function transfer()
@@ -66,7 +70,7 @@ class AccountsController extends Controller {
 			$account_from->amount = $account_from_balance - $sum_to_transfer;
 
 			if ($account_from_balance < $sum_to_transfer){
-				return Redirect::to('form')->with('warning', 'Your account doesnt have enough money' );
+				return Redirect::to('accounts')->with('warning', 'Your account doesnt have enough money' );
 
 			}
 
@@ -80,12 +84,12 @@ class AccountsController extends Controller {
 			$account_to->save();
 
 
-			return Redirect::to('form')->with('notice', 'Everything went well' );
+			return Redirect::to('accounts')->with('notice', 'Everything went well' );
 		}
 
 		//$errors = $validator->messages();
 
-		return Redirect::to('form')->withErrors($validator);
+		return Redirect::to('accounts')->withErrors($validator);
 
 
 		//var_dump(Input::all());
@@ -103,7 +107,11 @@ class AccountsController extends Controller {
 	 */
 	public function create()
 	{
-		//
+
+	//	if ( Auth::guest() ){
+		//	return redirect('auth/login');
+	//	}
+		return view('accounts.create');
 	}
 
 	/**
@@ -113,7 +121,42 @@ class AccountsController extends Controller {
 	 */
 	public function store()
 	{
-		//
+		$data = Input::all();
+
+		//return $data;
+
+		$rules = array(
+			'name'=>'required|unique:accounts',
+			'code'=>'required|max:12|unique:accounts'
+
+
+			);
+
+		$validator = Validator::make($data, $rules);
+
+		if( $validator->passes() ){
+
+
+			$account = new Account( Input::all() );
+			Auth::user()->accounts()->save($account);
+
+			//$account = new Account;
+
+			//$account->name = $data['name'];
+			//$account->code = $data['code'];
+
+			//$account->amount = 0;
+
+
+			//$account->save();
+			return Redirect::to('accounts')->with('notice', 'New account created' );
+
+		}
+
+		return Redirect::to('accounts/create')->withErrors($validator);
+
+
+
 	}
 
 	/**
@@ -124,7 +167,9 @@ class AccountsController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		$account = Account::findOrFail($id);
+
+		return view('accounts.show', compact('account'));
 	}
 
 	/**

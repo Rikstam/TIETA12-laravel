@@ -3,10 +3,42 @@
 
 <div class="row">
   <div class="large-12 columns">
-    <h1>Form test</h1>
+    <h1>Accounts index for {{$user['name']}}</h1>
   </div>
 </div>
 
+<div class = "row">
+
+  <div class="large-12 columns">
+
+  <table>
+  <thead>
+  <tr>
+    <th>Account id</th>
+    <th>Account code</th>
+    <th>Account balance</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  @foreach ($all_accounts as $account)
+  <tr>
+    <td>{{$account->id}}</td>
+  <td>{{$account->code}}</td>
+  <td>{{$account->amount}}</td>
+  <td><a href=""  class  ="button tiny alert">Delete</button></td>
+  </tr>
+  @endforeach
+
+  </tbody>
+
+  </table>
+
+  <a href ="/accounts/create" class  ="button success">Create a new account</a>
+
+  </div>
+
+</div>
 
 
 <div class = "row">

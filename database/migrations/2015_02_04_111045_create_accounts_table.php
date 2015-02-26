@@ -15,9 +15,11 @@ class CreateAccountsTable extends Migration {
 		Schema::create('accounts', function($table)
 {
 		$table->increments('id');
-		$table->decimal('amount',9,2);
+		$table->decimal('amount',9,2)->default(0.00);
 		$table->string('code', 12);
 		$table->string('name', 255);
+		$table->integer('user_id')->unsigned();
+		$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		$table->timestamps();
 		$table->softDeletes();
 
@@ -31,7 +33,8 @@ class CreateAccountsTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::drop('accounts');
+
 	}
 
 }
